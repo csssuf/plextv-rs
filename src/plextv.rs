@@ -1,19 +1,13 @@
-extern crate serde_json;
+extern crate serde_xml_rs;
 
 use error::*;
+use mediacontainer::*;
 use util::*;
+use pms::PlexMediaServer;
 
 use chrono::{DateTime, Utc};
 use reqwest::Client;
 use reqwest::header::Headers;
-
-/// Client for the plex.tv API.
-#[derive(Debug, Clone)]
-pub struct PlexTV {
-    client: Client,
-    headers: Headers,
-    user: PlexTVUser,
-}
 
 #[derive(Debug, Clone)]
 #[derive(Deserialize)]
@@ -56,6 +50,15 @@ struct PlexRoles {
     roles: Vec<String>,
 }
 
+/// Client for the plex.tv API.
+#[derive(Debug, Clone)]
+pub struct PlexTV {
+    client: Client,
+    headers: Headers,
+    user: PlexTVUser,
+    servers: Vec<PlexMediaServer>,
+}
+
 impl PlexTV {
     /// Create a new client for the plex.tv API.
     ///
@@ -96,6 +99,7 @@ impl PlexTV {
             client: client,
             headers: product_headers,
             user: res_struct.user,
+            servers: Vec::new(),
         })
     }
 
@@ -176,5 +180,20 @@ impl PlexTV {
     #[inline]
     pub fn remember_me(&self) -> bool {
         self.user.remember_me
+    }
+
+    pub fn servers(&mut self, _include_dead: bool) -> Result<&[PlexMediaServer]> {
+        let res = self.client
+            .get("https://plex.tv/pms/servers.xml")?
+            .headers(self.headers.clone())
+            .send()?;
+
+        let res_struct: MediaContainer = serde_xml_rs::from_reader(res)?;
+
+        for server in res_struct.servers {
+            self.servers.push(PlexMediaServer { entry: server });
+        }
+
+        Ok(&self.servers)
     }
 }

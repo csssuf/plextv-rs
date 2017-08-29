@@ -9,14 +9,17 @@ extern crate error_chain;
 #[macro_use]
 extern crate hyper;
 extern crate reqwest;
-extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
+extern crate serde_xml_rs;
 
 pub use self::error::*;
 pub use self::plextv::PlexTV;
+pub use self::pms::PlexMediaServer;
 
 mod error;
+mod mediacontainer;
 mod util;
 mod plextv;
+mod pms;

@@ -3,6 +3,7 @@ error_chain! {
         Reqwest(::reqwest::Error);
         Json(::serde_json::Error);
         Io(::std::io::Error);
+        Xml(::serde_xml_rs::Error);
     }
 
     errors {
