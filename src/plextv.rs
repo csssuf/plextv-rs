@@ -95,4 +95,74 @@ impl PlexTV {
             user: res_struct.user,
         })
     }
+
+    #[inline]
+    pub fn id(&self) -> u64 {
+        self.user.id
+    }
+
+    #[inline]
+    pub fn uuid(&self) -> &str {
+        &self.user.uuid
+    }
+
+    #[inline]
+    pub fn email(&self) -> &str {
+        &self.user.email
+    }
+
+    #[inline]
+    pub fn joined_at(&self) -> DateTime<Utc> {
+        self.user.joined_at
+    }
+
+    #[inline]
+    pub fn username(&self) -> &str {
+        &self.user.username
+    }
+
+    #[inline]
+    pub fn title(&self) -> &str {
+        &self.user.title
+    }
+
+    #[inline]
+    pub fn thumb(&self) -> &str {
+        &self.user.thumb
+    }
+
+    #[inline]
+    pub fn has_password(&self) -> bool {
+        self.user.has_password
+    }
+
+    #[inline]
+    pub fn authentication_token(&self) -> &str {
+        &self.user.authentication_token
+    }
+
+    #[inline]
+    pub fn roles(&self) -> Vec<&str> {
+        self.user.roles.roles.iter().map(|x| x.as_ref()).collect::<Vec<_>>()
+    }
+
+    #[inline]
+    pub fn entitlements(&self) -> Vec<&str> {
+        self.user.entitlements.iter().map(|x| x.as_ref()).collect::<Vec<_>>()
+    }
+
+    #[inline]
+    pub fn confirmed_at(&self) -> DateTime<Utc> {
+        self.user.confirmed_at
+    }
+
+    #[inline]
+    pub fn forum_id(&self) -> u64 {
+        self.user.forum_id
+    }
+
+    #[inline]
+    pub fn remember_me(&self) -> bool {
+        self.user.remember_me
+    }
 }
