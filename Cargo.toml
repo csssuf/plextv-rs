@@ -3,6 +3,11 @@ name = "plextv"
 version = "0.1.0"
 authors = ["James Forcier <csssuf@csssuf.net>"]
 license = "MIT/Apache-2.0"
+description = "Library for plex.tv and Plex Media Server APIs."
+repository = "https://github.com/csssuf/plextv-rs"
+readme = "README.md"
+keywords = ["plex", "media"]
+categories = ["api-bindings", "multimedia", "multimedia::audio", "multimedia::video"]
 
 [dependencies]
 reqwest = "0.7"
