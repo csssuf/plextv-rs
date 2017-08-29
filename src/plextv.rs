@@ -10,6 +10,7 @@ use reqwest::header::Headers;
 #[derive(Debug, Clone)]
 pub struct PlexTV {
     client: Client,
+    headers: Headers,
     user: PlexTVUser,
 }
 
@@ -78,7 +79,7 @@ impl PlexTV {
 
         let mut res = client
             .post("https://plex.tv/users/sign_in.json")?
-            .headers(product_headers)
+            .headers(product_headers.clone())
             .body(format!(
                 "user[login]={}&user[password]={}",
                 username,
@@ -89,6 +90,7 @@ impl PlexTV {
         let res_struct: PlexTVAuthResponse = res.json()?;
         Ok(PlexTV {
             client: client,
+            headers: product_headers,
             user: res_struct.user,
         })
     }
