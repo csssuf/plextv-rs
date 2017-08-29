@@ -2,6 +2,7 @@
 name = "plextv"
 version = "0.1.0"
 authors = ["James Forcier <csssuf@csssuf.net>"]
+license = "MIT/Apache-2.0"
 
 [dependencies]
 reqwest = "0.7"
