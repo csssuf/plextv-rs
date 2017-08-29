@@ -73,7 +73,7 @@ impl PlexTV {
     ) -> Result<PlexTV> {
         let client = Client::new()?;
 
-        let mut product_headers = Headers::with_capacity(3);
+        let mut product_headers = Headers::with_capacity(4);
         product_headers.set(XPlexProduct(product));
         product_headers.set(XPlexVersion(version));
         product_headers.set(XPlexClientIdentifier(identifier));
@@ -89,6 +89,9 @@ impl PlexTV {
             .send()?;
 
         let res_struct: PlexTVAuthResponse = res.json()?;
+
+        product_headers.set(XPlexToken(res_struct.user.clone().authentication_token));
+
         Ok(PlexTV {
             client: client,
             headers: product_headers,
