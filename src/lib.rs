@@ -3,6 +3,7 @@
 //! The `plextv` crate provides a Rust library for accessing both the plex.tv API and controlling
 //! individual Plex Media Server instances.
 
+extern crate chrono;
 #[macro_use]
 extern crate error_chain;
 #[macro_use]

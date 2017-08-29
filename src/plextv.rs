@@ -3,6 +3,7 @@ extern crate serde_json;
 use error::*;
 use util::*;
 
+use chrono::{DateTime, Utc};
 use reqwest::Client;
 use reqwest::header::Headers;
 
@@ -26,7 +27,7 @@ struct PlexTVUser {
     id: u64,
     uuid: String,
     email: String,
-    joined_at: String,
+    joined_at: DateTime<Utc>,
     username: String,
     title: String,
     thumb: String,
@@ -35,7 +36,7 @@ struct PlexTVUser {
     subscription: PlexSubscription,
     roles: PlexRoles,
     entitlements: Vec<String>,
-    #[serde(rename = "confirmedAt")] confirmed_at: String,
+    #[serde(rename = "confirmedAt")] confirmed_at: DateTime<Utc>,
     #[serde(rename = "forumId")] forum_id: u64,
     #[serde(rename = "rememberMe")] remember_me: bool,
 }
