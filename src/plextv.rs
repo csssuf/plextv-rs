@@ -143,12 +143,21 @@ impl PlexTV {
 
     #[inline]
     pub fn roles(&self) -> Vec<&str> {
-        self.user.roles.roles.iter().map(|x| x.as_ref()).collect::<Vec<_>>()
+        self.user
+            .roles
+            .roles
+            .iter()
+            .map(|x| x.as_ref())
+            .collect::<Vec<_>>()
     }
 
     #[inline]
     pub fn entitlements(&self) -> Vec<&str> {
-        self.user.entitlements.iter().map(|x| x.as_ref()).collect::<Vec<_>>()
+        self.user
+            .entitlements
+            .iter()
+            .map(|x| x.as_ref())
+            .collect::<Vec<_>>()
     }
 
     #[inline]
