@@ -1,20 +1,18 @@
 use util;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 #[derive(Deserialize)]
-#[serde(rename_all = "camelCase")]
+#[serde(default, rename_all = "camelCase")]
 pub(crate) struct MediaContainer {
-    friendly_name: String,
     identifier: String,
-    machine_identifier: String,
-    size: String,
+    size: u64,
 
     // Optional fields. Only one of these will generally be present in a MediaContainer, so it's up
     // to the code creating this MediaContainer to know which to expect.
     #[serde(default, rename = "Server")] pub(crate) servers: Vec<MediaServerEntry>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub(crate) struct MediaServerEntry {
