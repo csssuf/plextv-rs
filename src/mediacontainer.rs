@@ -1,3 +1,5 @@
+use util;
+
 #[derive(Debug, Clone)]
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -26,11 +28,11 @@ pub(crate) struct MediaServerEntry {
     machine_identifier: String,
     created_at: u64,
     updated_at: u64,
-    owned: bool,
-    synced: bool,
+    #[serde(deserialize_with = "util::deserialize_xml_bool")] owned: bool,
+    #[serde(deserialize_with = "util::deserialize_xml_bool")] synced: bool,
     // These fields are only present on servers not owned by the current user.
     #[serde(default)] access_token: String,
     #[serde(default)] source_title: String,
     #[serde(default)] owner_id: u64,
-    #[serde(default)] home: bool,
+    #[serde(deserialize_with = "util::deserialize_xml_bool", default)] home: bool,
 }

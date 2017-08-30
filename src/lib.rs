@@ -9,6 +9,7 @@ extern crate error_chain;
 #[macro_use]
 extern crate hyper;
 extern crate reqwest;
+extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
