@@ -191,7 +191,11 @@ impl PlexTV {
         let res_struct: MediaContainer = serde_xml_rs::from_reader(res)?;
 
         for server in res_struct.servers {
-            self.servers.push(PlexMediaServer { entry: server });
+            self.servers.push(PlexMediaServer::new(
+                self.client.clone(),
+                self.headers.clone(),
+                server,
+            ));
         }
 
         Ok(&self.servers)
