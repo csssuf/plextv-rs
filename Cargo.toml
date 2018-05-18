@@ -10,11 +10,11 @@ keywords = ["plex", "media"]
 categories = ["api-bindings", "multimedia", "multimedia::audio", "multimedia::video"]
 
 [dependencies]
+chrono = { version = "0.4", features = ["serde"] }
+failure = "0.1"
+hyper = "0.11"
 reqwest = "0.7"
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
 serde-xml-rs = { git = "https://github.com/RReverser/serde-xml-rs" }
-error-chain = "=0.11.0-rc.2"
-hyper = "0.11"
-chrono = { version = "0.4", features = ["serde"] }

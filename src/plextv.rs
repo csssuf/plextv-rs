@@ -1,13 +1,12 @@
-extern crate serde_xml_rs;
-
-use error::*;
 use mediacontainer::*;
 use util::*;
 use pms::PlexMediaServer;
 
 use chrono::{DateTime, Utc};
+use failure::Error;
 use reqwest::Client;
 use reqwest::header::Headers;
+use serde_xml_rs;
 
 #[derive(Debug, Clone)]
 #[derive(Deserialize)]
@@ -73,7 +72,7 @@ impl PlexTV {
         identifier: String,
         username: String,
         password: String,
-    ) -> Result<PlexTV> {
+    ) -> Result<PlexTV, Error> {
         let client = Client::new()?;
 
         let mut product_headers = Headers::with_capacity(4);
@@ -182,13 +181,21 @@ impl PlexTV {
         self.user.remember_me
     }
 
-    pub fn servers(&mut self, _include_dead: bool) -> Result<&[PlexMediaServer]> {
+    pub fn servers(&mut self, _include_dead: bool) -> Result<&[PlexMediaServer], Error> {
         let res = self.client
             .get("https://plex.tv/pms/servers.xml")?
             .headers(self.headers.clone())
             .send()?;
 
-        let res_struct: MediaContainer = serde_xml_rs::from_reader(res)?;
+        // TODO(csssuf): This is a lazy way of dealing with the fact that error-chain errors aren't
+        // Sync and so don't compose well with failure and I'm not interested in shaving *that*
+        // particular yak right now.
+        // Fix this when serde-xml-rs switches to failure or error-chain comes up with something
+        // for interop with failure or something.
+        let res_struct: MediaContainer = match serde_xml_rs::from_reader(res) {
+            Ok(s) => s,
+            Err(e) => bail!("deserialization error: {}", e),
+        };
 
         for server in res_struct.servers {
             self.servers.push(PlexMediaServer::new(
