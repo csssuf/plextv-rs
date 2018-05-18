@@ -55,7 +55,6 @@ pub struct PlexTV {
     client: Client,
     headers: Headers,
     user: PlexTVUser,
-    servers: Vec<PlexMediaServer>,
 }
 
 impl PlexTV {
@@ -98,7 +97,6 @@ impl PlexTV {
             client: client,
             headers: product_headers,
             user: res_struct.user,
-            servers: Vec::new(),
         })
     }
 
@@ -181,7 +179,7 @@ impl PlexTV {
         self.user.remember_me
     }
 
-    pub fn servers(&mut self, _include_dead: bool) -> Result<&[PlexMediaServer], Error> {
+    pub fn servers(&mut self, _include_dead: bool) -> Result<Vec<PlexMediaServer>, Error> {
         let res = self.client
             .get("https://plex.tv/pms/servers.xml")?
             .headers(self.headers.clone())
@@ -196,15 +194,16 @@ impl PlexTV {
             Ok(s) => s,
             Err(e) => bail!("deserialization error: {}", e),
         };
+        let mut out = Vec::new();
 
         for server in res_struct.servers {
-            self.servers.push(PlexMediaServer::new(
+            out.push(PlexMediaServer::new(
                 self.client.clone(),
                 self.headers.clone(),
                 server,
             ));
         }
 
-        Ok(&self.servers)
+        Ok(out)
     }
 }
