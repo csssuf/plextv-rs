@@ -197,9 +197,14 @@ impl PlexTV {
         let mut out = Vec::new();
 
         for server in res_struct.servers {
+            let mut headers = self.headers.clone();
+            if server.access_token != "" {
+                headers.set(XPlexToken(server.access_token.clone()));
+            }
+
             out.push(PlexMediaServer::new(
                 self.client.clone(),
-                self.headers.clone(),
+                headers,
                 server,
             ));
         }
