@@ -2,10 +2,11 @@ use mediacontainer::*;
 use util::*;
 use pms::PlexMediaServer;
 
+use std::time::Duration;
+
 use chrono::{DateTime, Utc};
 use failure::Error;
-use reqwest::Client;
-use reqwest::header::Headers;
+use reqwest::{Client, ClientBuilder, header::Headers};
 use serde_xml_rs;
 
 #[derive(Debug, Clone)]
@@ -179,7 +180,12 @@ impl PlexTV {
         self.user.remember_me
     }
 
-    pub fn servers(&mut self, _include_dead: bool) -> Result<Vec<PlexMediaServer>, Error> {
+    /// Fetch a list of accessible servers from plex.tv.
+    ///
+    /// If `prune_dead` is set, this function will only include those it is currently able to
+    /// contact. However, this requires generating a request to each server and waiting for it to
+    /// time out, which slows this function down considerably.
+    pub fn servers(&mut self, prune_dead: bool) -> Result<Vec<PlexMediaServer>, Error> {
         let res = self.client
             .get("https://plex.tv/pms/servers.xml")
             .headers(self.headers.clone())
@@ -206,6 +212,16 @@ impl PlexTV {
                 .default_headers(headers)
                 .timeout(Duration::from_secs(2))
                 .build()?;
+
+            if prune_dead {
+                if client
+                    .get(&format!("{}://{}:{}/", server.scheme, server.address, server.port))
+                    .send()
+                    .is_err()
+                {
+                    continue;
+                };
+            }
 
             out.push(PlexMediaServer::new(
                 client,
