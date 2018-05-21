@@ -16,9 +16,13 @@ impl PlexMediaServer {
         server: MediaServerEntry,
     ) -> PlexMediaServer {
         PlexMediaServer {
-            client: client,
+            client,
             entry: server,
         }
+    }
+
+    pub fn name(&self) -> &str {
+        &self.entry.name
     }
 
     pub fn system(&self) -> Result<Vec<DirectoryEntry>, Error> {
@@ -36,7 +40,7 @@ impl PlexMediaServer {
             Err(e) => bail!("deserialization error: {}", e),
         };
 
-        Ok(Vec::from(res_struct.directories))
+        Ok(res_struct.directories)
     }
 
     pub fn library_sections(&self) -> Result<Vec<DirectoryEntry>, Error> {
@@ -54,6 +58,6 @@ impl PlexMediaServer {
             Err(e) => bail!("deserialization error: {}", e),
         };
 
-        Ok(Vec::from(res_struct.directories))
+        Ok(res_struct.directories)
     }
 }
