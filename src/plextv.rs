@@ -72,7 +72,7 @@ impl PlexTV {
         username: String,
         password: String,
     ) -> Result<PlexTV, Error> {
-        let client = Client::new()?;
+        let client = Client::new();
 
         let mut product_headers = Headers::with_capacity(4);
         product_headers.set(XPlexProduct(product));
@@ -80,7 +80,7 @@ impl PlexTV {
         product_headers.set(XPlexClientIdentifier(identifier));
 
         let mut res = client
-            .post("https://plex.tv/users/sign_in.json")?
+            .post("https://plex.tv/users/sign_in.json")
             .headers(product_headers.clone())
             .body(format!(
                 "user[login]={}&user[password]={}",
@@ -181,7 +181,7 @@ impl PlexTV {
 
     pub fn servers(&mut self, _include_dead: bool) -> Result<Vec<PlexMediaServer>, Error> {
         let res = self.client
-            .get("https://plex.tv/pms/servers.xml")?
+            .get("https://plex.tv/pms/servers.xml")
             .headers(self.headers.clone())
             .send()?;
 
@@ -202,9 +202,13 @@ impl PlexTV {
                 headers.set(XPlexToken(server.access_token.clone()));
             }
 
+            let client = ClientBuilder::new()
+                .default_headers(headers)
+                .timeout(Duration::from_secs(2))
+                .build()?;
+
             out.push(PlexMediaServer::new(
-                self.client.clone(),
-                headers,
+                client,
                 server,
             ));
         }

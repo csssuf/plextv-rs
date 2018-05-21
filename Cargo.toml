@@ -12,8 +12,8 @@ categories = ["api-bindings", "multimedia", "multimedia::audio", "multimedia::vi
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
 failure = "0.1"
-hyper = "0.11"
-reqwest = "0.7"
+hyper = "0.11.22"
+reqwest = "0.8"
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
