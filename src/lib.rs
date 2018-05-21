@@ -15,10 +15,13 @@ extern crate serde_derive;
 extern crate serde_json;
 extern crate serde_xml_rs;
 
+pub use self::library::Library;
+pub use self::mediacontainer::{DirectoryEntry, DirectoryType};
 pub use self::plextv::PlexTV;
 pub use self::pms::PlexMediaServer;
 
+mod library;
 mod mediacontainer;
-mod util;
 mod plextv;
 mod pms;
+mod util;

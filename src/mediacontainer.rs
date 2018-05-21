@@ -1,6 +1,6 @@
 use util;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[derive(Deserialize)]
 pub enum DirectoryType {
     Unknown,
@@ -55,19 +55,76 @@ pub(crate) struct MediaServerEntry {
 #[derive(Deserialize)]
 #[serde(default, rename_all = "camelCase")]
 pub struct DirectoryEntry {
-    pub key: String,
-    pub title: String,
-    pub name: String,
-    #[serde(deserialize_with = "util::deserialize_xml_bool")] pub secondary: bool,
-    pub prompt: String,
+    pub(crate) key: String,
+    pub(crate) title: String,
+    pub(crate) name: String,
+    #[serde(deserialize_with = "util::deserialize_xml_bool")] pub(crate) secondary: bool,
+    pub(crate) prompt: String,
 
     // Library section related fields
-    #[serde(deserialize_with = "util::deserialize_xml_bool")] pub allow_sync: bool,
-    pub art: String,
-    pub composite: String,
-    #[serde(deserialize_with = "util::deserialize_xml_bool")] pub filters: bool,
-    #[serde(deserialize_with = "util::deserialize_xml_bool")] pub refreshing: bool,
-    pub thumb: String,
-    #[serde(rename = "type")] pub dir_type: DirectoryType,
-    pub agent: String,
+    #[serde(deserialize_with = "util::deserialize_xml_bool")] pub(crate) allow_sync: bool,
+    pub(crate) art: String,
+    pub(crate) composite: String,
+    #[serde(deserialize_with = "util::deserialize_xml_bool")] pub(crate) filters: bool,
+    #[serde(deserialize_with = "util::deserialize_xml_bool")] pub(crate) refreshing: bool,
+    pub(crate) thumb: String,
+    #[serde(rename = "type")] pub(crate) dir_type: DirectoryType,
+    pub(crate) agent: String,
+
+    // Fields for directories within libraries
+    #[serde(deserialize_with = "util::deserialize_xml_bool")] pub(crate) search: bool,
+}
+
+impl DirectoryEntry {
+    pub fn key(&self) -> &str {
+        &self.key
+    }
+
+    pub fn title(&self) -> &str {
+        &self.title
+    }
+
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
+    pub fn secondary(&self) -> bool {
+        self.secondary
+    }
+
+    pub fn prompt(&self) -> &str {
+        &self.prompt
+    }
+
+    pub fn allow_sync(&self) -> bool {
+        self.allow_sync
+    }
+
+    pub fn art(&self) -> &str {
+        &self.art
+    }
+
+    pub fn composite(&self) -> &str {
+        &self.composite
+    }
+
+    pub fn filters(&self) -> bool {
+        self.filters
+    }
+
+    pub fn refreshing(&self) -> bool {
+        self.refreshing
+    }
+
+    pub fn thumb(&self) -> &str {
+        &self.thumb
+    }
+
+    pub fn dir_type(&self) -> DirectoryType {
+        self.dir_type
+    }
+
+    pub fn agent(&self) -> &str {
+        &self.agent
+    }
 }

@@ -1,7 +1,8 @@
+use library::Library;
 use mediacontainer::*;
 
 use failure::Error;
-use reqwest::Client;
+use reqwest::{Client, Response};
 use serde_xml_rs;
 
 #[derive(Debug, Clone)]
@@ -25,15 +26,21 @@ impl PlexMediaServer {
         &self.entry.name
     }
 
-    pub fn system(&self) -> Result<Vec<DirectoryEntry>, Error> {
-        let res = self.client
+    pub(crate) fn make_request(&self, path: &str) -> Result<Response, Error> {
+        self.client
             .get(&format!(
-                "{}://{}:{}/system",
+                "{}://{}:{}{}",
                 self.entry.scheme,
                 self.entry.address,
-                self.entry.port
+                self.entry.port,
+                path
             ))
-            .send()?;
+            .send()
+            .map_err(|e| e.into())
+    }
+
+    pub fn system(&self) -> Result<Vec<DirectoryEntry>, Error> {
+        let res = self.make_request("/system")?;
 
         let res_struct: MediaContainer = match serde_xml_rs::from_reader(res) {
             Ok(s) => s,
@@ -43,21 +50,18 @@ impl PlexMediaServer {
         Ok(res_struct.directories)
     }
 
-    pub fn library_sections(&self) -> Result<Vec<DirectoryEntry>, Error> {
-        let res = self.client
-            .get(&format!(
-                "{}://{}:{}/library/sections",
-                self.entry.scheme,
-                self.entry.address,
-                self.entry.port
-            ))
-            .send()?;
+    pub fn library_sections(&self) -> Result<Vec<Library>, Error> {
+        let res = self.make_request("/library/sections")?;
 
         let res_struct: MediaContainer = match serde_xml_rs::from_reader(res) {
             Ok(s) => s,
             Err(e) => bail!("deserialization error: {}", e),
         };
 
-        Ok(res_struct.directories)
+        Ok(res_struct
+           .directories
+           .into_iter()
+           .map(|dir| Library::new(&self, dir))
+           .collect())
     }
 }
