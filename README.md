@@ -1,6 +1,9 @@
 # plextv
 Rust library for the plex.tv/Plex Media Server APIs.
 
+This library is in a pretty early WIP state, so use at your own risk! There's a lot of missing
+functionality and the design is likely to change pretty significantly too.
+
 ## License
 Licensed under either of
 
