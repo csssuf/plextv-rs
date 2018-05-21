@@ -70,8 +70,8 @@ impl PlexTV {
         product: String,
         version: String,
         identifier: String,
-        username: String,
-        password: String,
+        username: &str,
+        password: &str,
     ) -> Result<PlexTV, Error> {
         let client = Client::new();
 
@@ -95,7 +95,7 @@ impl PlexTV {
         product_headers.set(XPlexToken(res_struct.user.clone().authentication_token));
 
         Ok(PlexTV {
-            client: client,
+            client,
             headers: product_headers,
             user: res_struct.user,
         })
@@ -213,14 +213,12 @@ impl PlexTV {
                 .timeout(Duration::from_secs(2))
                 .build()?;
 
-            if prune_dead {
-                if client
-                    .get(&format!("{}://{}:{}/", server.scheme, server.address, server.port))
-                    .send()
-                    .is_err()
-                {
-                    continue;
-                };
+            if prune_dead && client
+                .get(&format!("{}://{}:{}/", server.scheme, server.address, server.port))
+                .send()
+                .is_err()
+            {
+                continue;
             }
 
             out.push(PlexMediaServer::new(
