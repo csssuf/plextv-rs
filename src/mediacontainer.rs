@@ -73,6 +73,9 @@ pub struct DirectoryEntry {
 
     // Fields for directories within libraries
     #[serde(deserialize_with = "util::deserialize_xml_bool")] pub(crate) search: bool,
+
+    // Content-specific fields
+    pub(crate) summary: String,
 }
 
 impl DirectoryEntry {
