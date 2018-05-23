@@ -17,11 +17,14 @@ extern crate serde_xml_rs;
 
 pub use self::library::Library;
 pub use self::mediacontainer::{DirectoryEntry, DirectoryType};
+pub use self::music::{MusicLibrary, Artist, Album};
 pub use self::plextv::PlexTV;
 pub use self::pms::PlexMediaServer;
 
 mod library;
+mod media;
 mod mediacontainer;
+mod music;
 mod plextv;
 mod pms;
 mod util;
