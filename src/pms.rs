@@ -61,7 +61,7 @@ impl PlexMediaServer {
         Ok(res_struct
            .directories
            .into_iter()
-           .map(|dir| Library::new(&self, dir))
+           .map(|dir| Library::new(self.clone(), dir))
            .collect())
     }
 }
