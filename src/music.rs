@@ -3,6 +3,7 @@ use mediacontainer::{DirectoryEntry, MediaContainer};
 use pms::PlexMediaServer;
 
 use failure::Error;
+use reqwest::Response;
 use serde_xml_rs;
 
 pub type ItemId = String;
@@ -103,12 +104,60 @@ pub struct Album<'a> {
 }
 
 impl<'a> Album<'a> {
+    pub fn tracks(&self) -> Result<Vec<Track>, Error> {
+        let res = self.library.server.make_request(&self.dirent.key)?;
+        let res_struct: MediaContainer = match serde_xml_rs::from_reader(res) {
+            Ok(s) => s,
+            Err(e) => bail!("deserialization error: {}", e),
+        };
+
+        let mut out = Vec::new();
+        for track in res_struct.tracks {
+            out.push(Track {
+                library: self.library,
+                track,
+            });
+        }
+        Ok(out)
+    }
+
+    pub fn track_by_id(&self, id: ItemId) -> Result<Option<Track>, Error> {
+        for track in self.tracks()? {
+            if track.track.key == id {
+                return Ok(Some(track));
+            }
+        }
+
+        Ok(None)
+    }
+
     pub fn name(&self) -> &str {
         &self.dirent.title
     }
 
     pub fn id(&self) -> ItemId {
         self.dirent.key.clone()
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct Track<'a> {
+    library: &'a MusicLibrary,
+    track: ApiTrack,
+}
+
+impl<'a> Track<'a> {
+    pub fn name(&self) -> &str {
+        &self.track.title
+    }
+
+    pub fn id(&self) -> ItemId {
+        self.track.key.clone()
+    }
+
+    pub fn contents(&self) -> Result<Response, Error> {
+        let part = &self.track.media[0].parts[0];
+        self.library.server.make_request(&part.key)
     }
 }
 
