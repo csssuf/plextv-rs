@@ -17,7 +17,7 @@ extern crate serde_xml_rs;
 
 pub use self::library::Library;
 pub use self::mediacontainer::{DirectoryEntry, DirectoryType};
-pub use self::music::{MusicLibrary, Artist, Album};
+pub use self::music::{MusicLibrary, ItemId, Artist, Album, Track};
 pub use self::plextv::PlexTV;
 pub use self::pms::PlexMediaServer;
 
