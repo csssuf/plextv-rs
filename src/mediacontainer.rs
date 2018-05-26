@@ -1,3 +1,4 @@
+use music::ApiTrack;
 use util;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -7,6 +8,7 @@ pub enum DirectoryType {
     #[serde(rename = "movie")] Movies,
     #[serde(rename = "artist")] Music,
     #[serde(rename = "show")] Shows,
+    #[serde(rename = "album")] Album,
 }
 
 impl Default for DirectoryType {
@@ -26,6 +28,7 @@ pub(crate) struct MediaContainer {
     // to the code creating this MediaContainer to know which to expect.
     #[serde(default, rename = "Server")] pub(crate) servers: Vec<MediaServerEntry>,
     #[serde(default, rename = "Directory")] pub(crate) directories: Vec<DirectoryEntry>,
+    #[serde(default, rename = "Track")] pub(crate) tracks: Vec<ApiTrack>,
 }
 
 #[derive(Debug, Clone, Default)]

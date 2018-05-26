@@ -115,7 +115,7 @@ impl<'a> Album<'a> {
 #[derive(Debug, Clone, Default)]
 #[derive(Deserialize)]
 #[serde(default, rename_all = "camelCase")]
-struct ApiTrack {
+pub(crate) struct ApiTrack {
     pub(crate) key: String,
     pub(crate) rating_key: String,
     #[serde(rename = "parentKey")]
