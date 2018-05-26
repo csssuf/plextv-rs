@@ -5,6 +5,8 @@ use pms::PlexMediaServer;
 use failure::Error;
 use serde_xml_rs;
 
+pub type ItemId = String;
+
 #[derive(Clone, Debug)]
 pub struct MusicLibrary {
     server: PlexMediaServer,
@@ -35,6 +37,16 @@ impl MusicLibrary {
         }
         Ok(out)
     }
+
+    pub fn artist_by_id(&self, id: ItemId) -> Result<Option<Artist>, Error> {
+        for artist in self.artists()? {
+            if artist.dirent.key == id {
+                return Ok(Some(artist));
+            }
+        }
+
+        Ok(None)
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -61,6 +73,16 @@ impl<'a> Artist<'a> {
         Ok(out)
     }
 
+    pub fn album_by_id(&self, id: ItemId) -> Result<Option<Album>, Error> {
+        for album in self.albums()? {
+            if album.dirent.key == id {
+                return Ok(Some(album));
+            }
+        }
+
+        Ok(None)
+    }
+
     pub fn name(&self) -> &str {
         &self.dirent.title
     }
@@ -68,12 +90,26 @@ impl<'a> Artist<'a> {
     pub fn summary(&self) -> &str {
         &self.dirent.summary
     }
+
+    pub fn id(&self) -> ItemId {
+        self.dirent.key.clone()
+    }
 }
 
 #[derive(Clone, Debug)]
 pub struct Album<'a> {
     library: &'a MusicLibrary,
     dirent: DirectoryEntry,
+}
+
+impl<'a> Album<'a> {
+    pub fn name(&self) -> &str {
+        &self.dirent.title
+    }
+
+    pub fn id(&self) -> ItemId {
+        self.dirent.key.clone()
+    }
 }
 
 #[derive(Debug, Clone, Default)]
