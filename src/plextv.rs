@@ -31,7 +31,7 @@ struct PlexTVUser {
     roles: PlexRoles,
     entitlements: Vec<String>,
     #[serde(rename = "confirmedAt")] confirmed_at: DateTime<Utc>,
-    #[serde(rename = "forumId")] forum_id: u64,
+    #[serde(rename = "forumId")] forum_id: Option<u64>,
     #[serde(rename = "rememberMe")] remember_me: bool,
 }
 
@@ -171,7 +171,7 @@ impl PlexTV {
     }
 
     #[inline]
-    pub fn forum_id(&self) -> u64 {
+    pub fn forum_id(&self) -> Option<u64> {
         self.user.forum_id
     }
 
